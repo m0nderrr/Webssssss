@@ -4,22 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        olive: '#2F3A2D',
-        sage: '#7C8A6A',
-        beige: '#D8C7A3',
-        ivory: '#F6F2E8',
-        charcoal: '#111111',
-        stone: '#D9D7CF',
+        frame: '#9EA5AF',
+        soft: '#ECECEC',
+        paper: '#F8F8F6',
+        ink: '#111111',
+        sky: '#A7CEDA',
+        'sky-dark': '#6FAFBD',
+        bluegray: '#CFD5DA',
       },
       fontFamily: {
-        display: ['"Arial Narrow"', '"Avenir Next Condensed"', '"Franklin Gothic Medium"', 'sans-serif'],
-        body: ['Inter', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+        display: ['"Arial Narrow"', '"Avenir Next Condensed"', '"Franklin Gothic Medium"', 'Impact', 'sans-serif'],
+        body: ['Inter', 'Avenir', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       letterSpacing: {
-        editorial: '0.08em',
+        editorial: '0.04em',
       },
       boxShadow: {
-        editorial: '0 18px 45px rgba(17, 17, 17, 0.08)',
+        poster: '0 22px 70px rgba(17, 17, 17, 0.16)',
       },
     },
   },

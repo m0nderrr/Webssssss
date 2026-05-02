@@ -1,89 +1,193 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
-import { FiArrowUpRight, FiMenu, FiX } from 'react-icons/fi'
+import { FiArrowUpRight, FiHome, FiMenu, FiSearch, FiUser, FiX } from 'react-icons/fi'
+import { useState } from 'react'
 
-const navLinks = ['Home', 'Projects', 'Services', 'Studio', 'Contact']
+const navLinks = ['Home', 'Properties', 'Buy', 'Rent', 'Find Agent', 'Contact']
 
-const projects = [
-  { n: '01', title: 'Olive Residence', category: 'Residential', year: '2026', desc: 'A secluded hillside villa shaped around courtyards and filtered daylight.', img: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1400&q=80' },
-  { n: '02', title: 'Sandstone Courtyard', category: 'Hospitality', year: '2025', desc: 'A calm retreat anchored by tactile stone textures and shaded walkways.', img: 'https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=1400&q=80' },
-  { n: '03', title: 'The Green Atrium', category: 'Commercial', year: '2024', desc: 'A workplace ecosystem with layered gardens and adaptable collaborative zones.', img: 'https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?auto=format&fit=crop&w=1400&q=80' },
-  { n: '04', title: 'Beige Horizon Villa', category: 'Luxury Living', year: '2026', desc: 'A coastal home balancing minimal planes, warm tones, and panoramic views.', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80' },
+const stats = [
+  ['10K', 'Happy clients'],
+  ['5K', 'Properties sold'],
+  ['15+', 'Cities covered'],
 ]
 
-const services = ['Residential Architecture', 'Commercial Design', 'Interior Architecture', 'Landscape Integration', '3D Visualization', 'Project Consultation']
+const features = [
+  ['Instant', 'Property Search', 'Discover homes and apartments with just a few clicks.'],
+  ['Verified', 'Pro Listings', '100% verified and updated property details.'],
+  ['Smart', 'Investing Insights', 'Personalized recommendations to grow your wealth.'],
+  ['Real Time', 'Property Updates', 'Get instant alerts on new listings and price changes.'],
+]
 
-const fadeUp = { hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.2, 0.8, 0.2, 1] } } }
+const heroImage = 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=90'
+const detailImage = 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1400&q=85'
 
-function Preloader({ done }) {
-  useEffect(() => { const t = setTimeout(done, 2900); return () => clearTimeout(t) }, [done])
-  return <motion.div className="fixed inset-0 z-[100] bg-beige flex items-center justify-center overflow-hidden" exit={{ opacity: 0 }}>
-    <motion.div className="text-center text-olive">
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex items-center justify-center gap-3 font-display tracking-[0.3em]"><span className="w-8 h-[1px] bg-olive"/>ATELIER VERDE</motion.div>
-      <motion.svg width="320" height="70" viewBox="0 0 320 70" className="mx-auto mb-8"><motion.path d="M6 60 L60 12 L140 48 L220 18 L314 58" fill="none" stroke="#2F3A2D" strokeWidth="1.4" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: 1.3 }}/></motion.svg>
-      <motion.h1 className="font-display text-4xl md:text-6xl tracking-editorial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>DESIGNING QUIET LUXURY</motion.h1>
-    </motion.div>
-    <motion.div className="absolute inset-x-0 bottom-0 h-1/2 bg-olive" initial={{ y: '100%' }} animate={{ y: ['100%', '88%', '100%'] }} transition={{ duration: 2.7, times: [0, 0.7, 1] }} />
-  </motion.div>
+function Header() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <header className="relative z-20 flex items-center justify-between gap-4 text-[10px] uppercase tracking-wide">
+      <a href="#home" className="grid h-8 w-8 place-items-center rounded-full border border-ink/15 bg-paper">
+        <FiHome className="text-base" />
+      </a>
+
+      <nav className="hidden items-center gap-7 md:flex">
+        {navLinks.map((link, index) => (
+          <a key={link} href={`#${link.toLowerCase().replaceAll(' ', '-')}`} className="group flex items-center gap-5 text-ink/60 transition hover:text-ink">
+            <span className={index === 0 ? 'text-ink' : ''}>{link}</span>
+            {index < navLinks.length - 1 && <span className="h-1 w-1 rounded-full bg-sky" />}
+          </a>
+        ))}
+      </nav>
+
+      <div className="hidden items-center gap-2 md:flex">
+        <button className="grid h-8 w-8 place-items-center rounded-full bg-ink text-paper" aria-label="Search">
+          <FiSearch />
+        </button>
+        <button className="flex h-8 items-center gap-2 rounded-full border border-ink/20 px-3">
+          <FiUser />
+          Sign In
+        </button>
+      </div>
+
+      <button className="grid h-9 w-9 place-items-center rounded-full border border-ink/20 md:hidden" onClick={() => setOpen((value) => !value)} aria-label="Menu">
+        {open ? <FiX /> : <FiMenu />}
+      </button>
+
+      {open && (
+        <div className="absolute left-0 right-0 top-12 grid gap-2 rounded-[18px] border border-ink/10 bg-paper p-4 shadow-poster md:hidden">
+          {navLinks.map((link) => (
+            <a key={link} href={`#${link.toLowerCase().replaceAll(' ', '-')}`} className="rounded-full bg-soft px-4 py-3">
+              {link}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+  )
+}
+
+function StatColumn() {
+  return (
+    <div className="grid gap-5 text-right">
+      {stats.map(([value, label]) => (
+        <div key={label}>
+          <p className="font-display text-3xl leading-none tracking-normal md:text-4xl">{value}</p>
+          <p className="mt-1 text-[9px] uppercase tracking-wide text-ink/55">{label}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function FeatureCard({ item, index }) {
+  const [lineOne, lineTwo, copy] = item
+  const dark = index === 1
+
+  return (
+    <article className={`group flex min-h-36 flex-col justify-between rounded-[14px] p-5 transition ${dark ? 'bg-ink text-paper' : 'bg-paper text-ink'}`}>
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="max-w-56 text-right font-display text-2xl uppercase leading-[0.9] tracking-normal">
+          {lineOne}
+          <br />
+          {lineTwo}
+        </h3>
+        <FiArrowUpRight className={`mt-1 shrink-0 text-2xl transition group-hover:translate-x-1 group-hover:-translate-y-1 ${dark ? 'text-sky' : 'text-sky-dark'}`} />
+      </div>
+      <p className={`max-w-48 text-[10px] uppercase leading-snug ${dark ? 'text-paper/55' : 'text-ink/45'}`}>{copy}</p>
+    </article>
+  )
 }
 
 export default function App() {
-  const [loaded, setLoaded] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const { scrollYProgress } = useScroll()
-  const yImg = useTransform(scrollYProgress, [0, 0.4], ['0%', '8%'])
-  const finishLoading = useCallback(() => setLoaded(true), [])
+  return (
+    <div className="min-h-screen bg-frame px-3 py-5 text-ink antialiased sm:px-6 md:py-12">
+      <main id="home" className="mx-auto max-w-[1180px] overflow-hidden rounded-none bg-soft p-4 shadow-poster sm:p-6 lg:p-7">
+        <Header />
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+        <section className="relative pt-14">
+          <div className="grid gap-6 lg:grid-cols-[1fr_150px]">
+            <div>
+              <div className="grid items-start gap-4 md:grid-cols-[180px_1fr]">
+                <div className="order-2 mt-3 md:order-1 md:mt-32">
+                  <p className="mb-3 w-max rounded-full border border-ink/20 bg-paper px-3 py-1 text-[10px] uppercase tracking-wide">Best real estate agency</p>
+                  <p className="max-w-44 text-[10px] uppercase leading-snug text-ink/70">
+                    Find your dream home, explore premium properties, and invest with confidence through City Arcade.
+                  </p>
+                </div>
 
-  const serviceRows = useMemo(() => services.map((s) => ({ name: s, desc: 'Context-driven design with restrained, timeless detailing.' })), [])
+                <div className="order-1 md:order-2">
+                  <h1 className="font-display text-[5.4rem] uppercase leading-[0.74] tracking-normal sm:text-[8rem] md:text-[10.5rem] lg:text-[12rem]">
+                    City
+                    <span className="block pl-[20%]">Arcade</span>
+                  </h1>
+                </div>
+              </div>
 
-  return <div className="bg-ivory text-charcoal font-body">
-    <AnimatePresence>{!loaded && <Preloader done={finishLoading} />}</AnimatePresence>
-    <header className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] md:w-[92%] max-w-7xl transition-all duration-300 ${scrolled ? 'bg-ivory/85 backdrop-blur border border-stone shadow-sm' : 'bg-transparent' } rounded-full px-5 py-3`}>
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-olive"/><span className="font-display tracking-[0.2em] text-sm">ATELIER VERDE</span></div>
-        <nav className="hidden md:flex items-center gap-7 text-sm">{navLinks.map((n) => <a key={n} href={`#${n.toLowerCase()}`} className="hover:text-sage">{n}</a>)}</nav>
-        <div className="flex items-center gap-2">
-          <button className="hidden md:block border border-olive text-olive px-4 py-2 rounded-full text-sm hover:bg-olive hover:text-ivory transition">Start a Project</button>
-          <button className="md:hidden" onClick={() => setMobileOpen((v) => !v)}>{mobileOpen ? <FiX/> : <FiMenu/>}</button>
-        </div>
-      </div>
-      {mobileOpen && <div className="md:hidden mt-3 pt-3 border-t border-stone grid gap-2">{navLinks.map((n) => <a key={n} href={`#${n.toLowerCase()}`} className="py-1">{n}</a>)}</div>}
-    </header>
+              <div className="relative -mt-3 overflow-hidden rounded-[18px] md:-mt-12">
+                <img src={heroImage} alt="Modern modular residence" className="h-[360px] w-full object-cover grayscale-[15%] sm:h-[480px] lg:h-[520px]" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-ink/40 via-transparent to-paper/10" />
+                <p className="absolute bottom-5 left-5 max-w-60 font-display text-2xl uppercase leading-none text-paper">
+                  Future of living
+                  <br />
+                  with City Arcade
+                </p>
+              </div>
+            </div>
 
-    <main>
-      <section id="home" className="min-h-screen pt-36 pb-20 px-5 md:px-10 max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 items-end">
-        <motion.div variants={fadeUp} initial="hidden" animate="show">
-          <p className="text-xs tracking-[0.3em] text-sage mb-5">RESIDENTIAL / COMMERCIAL / INTERIOR</p>
-          <h1 className="font-display text-[3.1rem] sm:text-[4.8rem] lg:text-[7rem] leading-[0.9] tracking-[0.03em]">ARCHITECTURE<br/>SHAPED BY<br/><span className="text-sage">NATURE</span></h1>
-          <p className="mt-7 max-w-md text-charcoal/75">Based on timeless materiality and modern restraint, we craft spaces that age with grace.</p>
-          <div className="mt-8 flex flex-wrap gap-3"><button className="px-6 py-3 rounded-full bg-olive text-ivory">Explore Projects</button><button className="px-6 py-3 rounded-full border border-charcoal/30">Book Consultation</button></div>
-        </motion.div>
-        <motion.div style={{ y: yImg }} className="relative h-[62vh] rounded-[28px] overflow-hidden shadow-editorial"><motion.img initial={{ scale: 1.12, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1.2, delay: 0.25 }} src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80" className="w-full h-full object-cover" /><div className="absolute bottom-5 left-5 bg-ivory/85 px-4 py-2 rounded-full text-xs tracking-wider">Green + Beige Identity</div></motion.div>
-      </section>
+            <aside className="hidden pt-24 lg:block">
+              <StatColumn />
+            </aside>
+          </div>
 
-      <section className="py-24 px-5 md:px-10 text-center"><motion.p whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 28 }} viewport={{ once: true }} className="max-w-4xl mx-auto text-3xl md:text-5xl leading-[1.2] font-display">We design <span className="text-sage">spaces</span> that feel <span className="text-beige">calm</span>, functional, and deeply connected to their surroundings.</motion.p></section>
+          <div className="mt-6 grid grid-cols-3 gap-3 lg:hidden">
+            {stats.map(([value, label]) => (
+              <div key={label} className="rounded-[14px] bg-paper p-4 text-center">
+                <p className="font-display text-3xl leading-none tracking-normal">{value}</p>
+                <p className="mt-1 text-[9px] uppercase tracking-wide text-ink/55">{label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <section id="projects" className="py-20 px-5 md:px-10 max-w-7xl mx-auto">
-        <h2 className="font-display text-5xl mb-10">Featured Projects</h2>
-        <div className="grid md:grid-cols-12 gap-6">{projects.map((p,i)=><motion.article key={p.title} whileHover={{ y: -8 }} className={`group overflow-hidden rounded-2xl bg-white border border-stone/70 shadow-sm ${i===0?'md:col-span-7':'md:col-span-5'}`}><div className="overflow-hidden h-64"><img src={p.img} className="w-full h-full object-cover group-hover:scale-105 transition duration-700"/></div><div className="p-6"><p className="text-xs tracking-[0.3em] text-sage mb-2">{p.n}</p><h3 className="font-display text-3xl mb-2">{p.title}</h3><p className="text-sm mb-1">{p.category} · {p.year}</p><p className="text-charcoal/70 text-sm">{p.desc}</p></div></motion.article>)}</div>
-      </section>
+        <section id="properties" className="px-2 py-14 text-center md:py-20">
+          <h2 className="mx-auto max-w-4xl font-display text-4xl uppercase leading-[1.02] tracking-normal md:text-6xl">
+            A modern real estate platform, City Arcade incorporates
+            <span className="block text-ink/35">advanced digital tools and trusted</span>
+            <span className="block text-ink/35">local expertise</span>
+          </h2>
+        </section>
 
-      <section id="services" className="py-20 bg-stone/35 px-5 md:px-10"><div className="max-w-6xl mx-auto"><h2 className="font-display text-5xl mb-8">Services</h2>{serviceRows.map((s, idx)=><div key={s.name} className="group border-t border-charcoal/15 py-6 grid md:grid-cols-3 gap-4 hover:bg-sage/20 transition px-2"><p className="text-sm text-sage">0{idx+1}</p><h3 className="font-display text-2xl">{s.name}</h3><p className="text-sm text-charcoal/70 flex justify-between items-start gap-3">{s.desc}<FiArrowUpRight className="mt-1"/></p></div>)}</div></section>
+        <section id="buy" className="grid gap-4 lg:grid-cols-[1fr_1.06fr]">
+          <div className="grid gap-4">
+            {features.map((item, index) => (
+              <FeatureCard key={item[1]} item={item} index={index} />
+            ))}
+          </div>
 
-      <section id="studio" className="py-24 px-5 md:px-10 max-w-6xl mx-auto"><h2 className="font-display text-6xl mb-8">WHY CHOOSE US?</h2>{['Thoughtful Planning','Natural Material Palette','Modern Minimalist Design','Functional Luxury'].map((item,i)=><div key={item} className="border-t border-charcoal/20 py-8 grid md:grid-cols-12 gap-4"><p className="md:col-span-2 text-sage">0{i+1}</p><h3 className="md:col-span-4 font-display text-2xl">{item}</h3><p className="md:col-span-6 text-charcoal/70">Every decision is rooted in proportion, context, and longevity so each project feels effortless in daily life.</p></div>)}</section>
+          <div className="overflow-hidden rounded-[16px] bg-paper">
+            <img src={detailImage} alt="Luxury home exterior" className="h-full min-h-[430px] w-full object-cover grayscale" />
+          </div>
+        </section>
 
-      <section className="py-24 px-5 md:px-10 bg-olive text-ivory"><div className="max-w-6xl mx-auto"><h2 className="font-display text-5xl mb-10">Process</h2><div className="grid md:grid-cols-4 gap-6">{['Discover','Concept','Design Development','Delivery'].map((step,i)=><motion.div key={step} whileInView={{opacity:1,y:0}} initial={{opacity:0,y:25}} viewport={{once:true}} transition={{delay:i*0.1}} className="border-t border-ivory/40 pt-4"><p className="text-xs mb-2">0{i+1}</p><h3 className="font-display text-2xl">{step}</h3></motion.div>)}</div></div></section>
-
-      <section id="contact" className="py-24 px-5 md:px-10"><div className="max-w-6xl mx-auto rounded-3xl bg-beige p-10 md:p-14 text-olive"><h2 className="font-display text-5xl md:text-7xl leading-[0.95]">Let’s design a space that lasts.</h2><button className="mt-8 px-6 py-3 rounded-full bg-olive text-ivory">Start Your Project</button><div className="mt-10 grid md:grid-cols-3 gap-4 text-sm"><p>email@example.com</p><p>+000 000 000</p><p>Location</p></div></div></section>
-    </main>
-
-    <footer className="px-5 md:px-10 pb-10"><div className="max-w-7xl mx-auto pt-8 border-t border-stone flex flex-wrap justify-between gap-3 text-sm"><p className="font-display tracking-[0.2em]">ATELIER VERDE</p><p>Instagram · Behance · LinkedIn</p><p>© 2026 Atelier Verde</p></div></footer>
-  </div>
+        <section id="find-agent" className="mt-4 grid overflow-hidden rounded-[16px] bg-bluegray md:grid-cols-[1fr_1.1fr]">
+          <div className="relative min-h-[240px] overflow-hidden">
+            <img src={heroImage} alt="Glass residence detail" className="absolute inset-0 h-full w-full object-cover object-left-bottom" />
+          </div>
+          <div className="flex min-h-[240px] flex-col justify-between p-6 text-right">
+            <div>
+              <h2 className="font-display text-5xl uppercase leading-[0.82] tracking-normal md:text-7xl">
+                Why
+                <br />
+                CityArcade?
+              </h2>
+              <a href="#contact" className="mt-3 inline-flex rounded-full border border-ink/20 px-4 py-2 text-[10px] uppercase tracking-wide">
+                Why choose us
+              </a>
+            </div>
+            <p className="max-w-64 self-start text-left text-[10px] uppercase leading-snug text-ink/60">
+              Stay updated with property valuations, neighborhood trends, and verified local agents.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
 }
