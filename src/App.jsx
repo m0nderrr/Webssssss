@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import { FiArrowUpRight, FiMenu, FiX } from 'react-icons/fi'
 
@@ -33,6 +33,7 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false)
   const { scrollYProgress } = useScroll()
   const yImg = useTransform(scrollYProgress, [0, 0.4], ['0%', '8%'])
+  const finishLoading = useCallback(() => setLoaded(true), [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30)
@@ -43,7 +44,7 @@ export default function App() {
   const serviceRows = useMemo(() => services.map((s) => ({ name: s, desc: 'Context-driven design with restrained, timeless detailing.' })), [])
 
   return <div className="bg-ivory text-charcoal font-body">
-    <AnimatePresence>{!loaded && <Preloader done={() => setLoaded(true)} />}</AnimatePresence>
+    <AnimatePresence>{!loaded && <Preloader done={finishLoading} />}</AnimatePresence>
     <header className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] md:w-[92%] max-w-7xl transition-all duration-300 ${scrolled ? 'bg-ivory/85 backdrop-blur border border-stone shadow-sm' : 'bg-transparent' } rounded-full px-5 py-3`}>
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-olive"/><span className="font-display tracking-[0.2em] text-sm">ATELIER VERDE</span></div>
